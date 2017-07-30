@@ -1,0 +1,78 @@
+\section{Our Proposed Approach}
+\par In this section, a novel approach of adaptively the Spark configurations platform is proposed, and based on the model; several common machine learning algorithms for configuration parameter tuning are explored. And then the specific details of parameter selection, coding method, evaluation function, weighted allocation, chaos handling, data collection, and training, testing and parameter space searching are described. Finally, the models are evaluated in their accuracy, computational performance, and their sensitivity to various variables such as size of training data, application characteristics.
+
+\par A greedy algorithm is an algorithmic paradigm that follows the problem solving heuristic of making the locally optimal choice at each stage\cite{greedy} with the hope of finding a global optimum. In many problems, a greedy strategy does not in general produce an optimal solution, but nonetheless a greedy heuristic may yield locally optimal solutions that approximate a global optimal solution in a reasonable time.
+\par Our approach will be based on Chaos Particle Swarm Optimization(CPSO) algorithms. We will adopt some Spark parameters as ?????
+\par Markov decision processes (MDPs) provide a mathematical framework for modeling decision making in situations where outcomes are partly random and partly under the control of a decision maker. MDPs are useful for studying a wide range of optimization problems solved via dynamic programming and reinforcement learning.
+
+
+\begin{table*}[t]
+\caption{Selected Parameters In Our Approach} \label{tab:parameters} 
+\begin{center}
+    \begin{tabular}{ | c | c  | p{5cm} | c | p{5cm} |}
+    \hline
+    Parameter Name & Default & Meaning & Rules of Thumb & Importance\\ 
+    \hline
+    spark.driver.memory & 512m & Amount of memory to use for the driver process. & 1g-4g & Directly affect computing performace of spark memory.\\ 
+    \hline
+    spark.driver.maxResultSize & 1g & Each Spark action in the total size of the serialization results for all partitions. & 1g-8g & It represents a fixed memory overhead per reduce task.\\ 
+    \hline
+    spark.executor.memory &  1g &Amount of memory to use per executor process.   & 2g-8g & Directly affect computing performace of spark memory.\\
+    \hline
+     spark.driver.cores & 1 & Number of cores to use for the driver process. & 1-8. & Directly affect the parallelism of the program.\\
+    \hline
+      spark.executor.cores &  1 & Number of cores to use  per executor process. & 10-40 & Directly affect the parallelism of the program.\\
+    \hline
+     spark.shuffle.file.buffer &  32k & Size of the in-memory buffer for each shuffle file output stream. & 10-40 & These buffers reduce the number of disk seeks and system calls made in creating intermediate shuffle files.\\
+    \hline
+     spark.reducer.maxSizeInFlight &  48m & Maximum size of map outputs to fetch simultaneously from each reduce task.  & 24k-96k & This represents a fixed memory overhead per reduce task. \\
+    \hline
+     spark.shuffle.compress &  true & Whether to compress map output files. & true/false & It will speed up the shuffle action.\\
+    \hline
+     spark.shuffle.spill.compress &  true & Whether to compress data spilled during shuffles. & true/false & It will speed up the shuffle action.\\
+    \hline
+     spark.broadcast.compress &  true & Whether to compress broadcast variables before sending them. & true/false & It will speed up the broadcast action.\\
+    \hline
+     spark.io.compression.codec &  lz4 & The codec used to compress internal data such as RDD partitions, event log, broadcast variables and shuffle outputs. & lz4/lzf/snappy. &  It will speed up all of I/O action.\\
+    \hline
+     spark.rdd.compress &  false & Whether to compress serialized RDD partitions. & true/fasle & It can save substantial space at the cost of some extra CPU time.\\
+    \hline
+     spark.default.parallelism &  0.6 & Default number of partitions in RDDs returned by transformations. & 0.4-0.8 & It will add RDD parallelism when user operate join, reduceByKey, and parallelize.\\
+    \hline
+     spark.memory.fraction &  0.6 & Fraction of (heap space - 300MB) used for execution and storage & 0.4-0.8 & The purpose of this config is to set aside memory for internal metadata, user data structures, and imprecise size estimation in the case of sparse, unusually large records. \\
+    \hline
+     spark.memory.storageFraction &  0.5  & Amount of storage memory immune to eviction, expressed as a fraction of the size of the region set aside by it. & 0.3-0.8 & The higher this is, the less working memory may be available to execution and tasks may spill to disk more often.\\
+       \hline
+     spark.broadcast.blockSize &  4m & Size of each piece of a block for TorrentBroadcastFactory. & 2m-8m & It will affect parallelism during broadcast.\\
+      \hline
+    spark.files.useFetchCache &  true & File fetching will use a local cache that is shared by executors that belong to the same application, which can improve task launching performance when running many executors on the same host. & true/false & This optimization may be disabled in order to use Spark local directories that reside on NFS filesystems.\\    
+  \hline
+     spark.files.openCostInBytes &  4M & The estimated cost to open a file, measured by the number of bytes could be scanned in the same time. & true/false &the partitions with small files will be faster than partitions with bigger files.\\
+  \hline
+     spark.storage.memoryMapThreshold &  2m & Size of a block above which Spark memory maps when reading a block from disk. & 1m-4m & It prevents Spark from memory mapping very small blocks.\\
+  \hline
+    spark.rpc.message.maxSize & true & Maximum message size (in MB) to allow in "control plane" communication. & true/false & It will speed up the network action when  you are running jobs with many thousands of map and reduce tasks.\\
+  \hline
+    spark.speculation.quantile &  0.75 & Fraction of tasks which must be complete before speculation is enabled for a particular stage. & 0.45-0.9 & It will speed up the task.\\
+  \hline
+     spark.dynamicAllocation.enabled &  true & Whether to use dynamic resource allocation, which scales the number of executors registered with this application up and down based on the workload. & true/false & It will increase the resource when we are handling a workload .\\
+   \hline    
+    \end{tabular}
+\end{center}	
+\end{table*}
+
+\subsection{Parameters Selection}
+\par In this work, 22 parameters are selected, which are shown in Table~\ref{tab:parameters}. The first thirteen parameters are configuration parameters of Spark and the last one is the size of input data. In Table ~\ref{tab:parameters}, the ‘default’ column lists the default value of each parameter, and the ‘rules of thumb’ column lists the values of each parameter that the industry recommends [13][14]. The reasons for selecting these parameters are listed as follows. First, the influences of these parameters cover almost all of the available resources in a cluster, such as CPU, Memory, and Disk. Secondly, these parameters have a great impact on different modules of Spark, such as schedule, shuffle and compress modules. Finally, these parameters have impact in different levels of a cluster, such as machine-level, cluster-level. Generally speaking, various factors that affect the performance of the cluster are comprehensively considered. Based on our domain expertise, these parameters that have significant impact on the performance of Spark are selected.
+
+\par However, parameter selection in a machine learning-based performance model is a non-trivial research issue, which can’t only depend on the domain experts; we will concentrate on this in the future work.
+
+\subsection{Coding Method}
+
+\subsection{Evaluation Function}
+\subsection{Weighted Allocation}
+\subsection{Chaos Handling}
+
+
+
+
+

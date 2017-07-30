@@ -1,0 +1,6 @@
+\section{Exiperments and Evaluation}
+\subsection{Exiperments}
+\par  To evaluate the effectiveness of our method, a Spark cluster with 4 nodes (one master node and three slave node) is deployed. The master node has Xeon processor E3-1200 v3 and 128GB memory. All slave nodes were with eight 3.40 GHz In-tel Core i7 and 8GB memory. Each node has also the same software stack: Ubuntu 16.04 LT and Spark 2.2.0 with Hadoop 2.7.3. The detailed configuration of the Spark cluster is listed in Table II.
+
+\subsection{Evaluation}
+\par In order to model the performance of Spark applications,  we select twenty-two main parameters, which are shown in Table~\ref{tab:parameters}. The first fourteen parameters are configuration parameters of Spark and the last one is the size of input data. In Table~\ref{tab:parameters}, the ‘default' column lists the default value of each parameter, and the ‘rules of thumb’ column lists the values of each parameter that the industry recommends [13][14].
