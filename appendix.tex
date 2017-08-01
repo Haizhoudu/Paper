@@ -1,0 +1,60 @@
+\section{Appendix: Selected Parameters In the Proposed Approach}
+
+\begin{table*}[!htbp]
+\caption{Selected Parameters In the Proposed Approach} \label{tab:parameters} 
+\begin{center}
+    \begin{tabular}{ | c | c  | p{4cm} | c | p{5cm} |}
+    \hline
+    Parameter Name & Default & Meaning & Rules of Thumb & Importance\\ 
+    \hline
+    spark.driver.memory & 512m & Amount of memory to use for the driver process. & 1g-4g & Directly affect computing performace of spark memory.\\ 
+    \hline
+    spark.driver.maxResultSize & 1g & Each Spark action in the total size of the serialization results for all partitions. & 1g-8g & It represents a fixed memory overhead per reduce task.\\ 
+    \hline
+    spark.executor.memory &  1g &Amount of memory to use per executor process.   & 2g-8g & Directly affect computing performace of spark memory.\\
+    \hline
+     spark.driver.cores & 1 & Number of cores to use for the driver process. & 1-8. & Directly affect the parallelism of the program.\\
+    \hline
+      spark.executor.cores &  1 & Number of cores to use  per executor process. & 10-40 & Directly affect the parallelism of the program.\\
+    \hline
+     spark.shuffle.file.buffer &  32k & Size of the in-memory buffer for each shuffle file output stream. & 10-40 & These buffers reduce the number of disk seeks and system calls made in creating intermediate shuffle files.\\
+    \hline
+     spark.reducer.maxSizeInFlight &  48m & Maximum size of map outputs to fetch simultaneously from each reduce task.  & 24k-96k & This represents a fixed memory overhead per reduce task. \\
+    \hline
+     spark.shuffle.compress &  true & Whether to compress map output files. & true/false & It will speed up the shuffle action.\\
+    \hline
+     spark.shuffle.spill.compress &  true & Whether to compress data spilled during shuffles. & true/false & It will speed up the shuffle action.\\
+    \hline
+     spark.broadcast.compress &  true & Whether to compress broadcast variables before sending them. & true/false & It will speed up the broadcast action.\\
+    \hline
+     spark.io.compression.codec &  lz4 & The codec used to compress internal data such as RDD partitions, event log, broadcast variables and shuffle outputs. & lz4/lzf/snappy. &  It will speed up all of I/O action.\\
+    \hline
+     spark.rdd.compress &  false & Whether to compress serialized RDD partitions. & true/fasle & It can save substantial space at the cost of some extra CPU time.\\
+    \hline
+     spark.default.parallelism &  0.6 & Default number of partitions in RDDs returned by transformations. & 0.4-0.8 & It will add RDD parallelism when user operate join, reduceByKey, and parallelize.\\
+    \hline
+     spark.memory.fraction &  0.6 & Fraction of (heap space - 300MB) used for execution and storage & 0.4-0.8 & The purpose of this config is to set aside memory for internal metadata, user data structures, and imprecise size estimation in the case of sparse, unusually large records. \\
+    \hline
+     spark.memory.storageFraction &  0.5  & Amount of storage memory immune to eviction, expressed as a fraction of the size of the region set aside by it. & 0.3-0.8 & The higher this is, the less working memory may be available to execution and tasks may spill to disk more often.\\
+       \hline
+     spark.broadcast.blockSize &  4m & Size of each piece of a block for TorrentBroadcastFactory. & 2m-8m & It will affect parallelism during broadcast.\\
+      \hline
+    spark.files.useFetchCache &  true & File fetching will use a local cache that is shared by executors that belong to the same application, which can improve task launching performance when running many executors on the same host. & true/false & This optimization may be disabled in order to use Spark local directories that reside on NFS filesystems.\\    
+  \hline
+     spark.files.openCostInBytes &  4M & The estimated cost to open a file, measured by the number of bytes could be scanned in the same time. & true/false &the partitions with small files will be faster than partitions with bigger files.\\
+  \hline
+     spark.storage.memoryMapThreshold &  2m & Size of a block above which Spark memory maps when reading a block from disk. & 1m-4m & It prevents Spark from memory mapping very small blocks.\\
+  \hline
+    spark.rpc.message.maxSize & true & Maximum message size (in MB) to allow in "control plane" communication. & true/false & It will speed up the network action when  you are running jobs with many thousands of map and reduce tasks.\\
+  \hline
+    spark.speculation.quantile &  0.75 & Fraction of tasks which must be complete before speculation is enabled for a particular stage. & 0.45-0.9 & It will speed up the task.\\
+  \hline
+     spark.dynamicAllocation.enabled &  true & Whether to use dynamic resource allocation, which scales the number of executors registered with this application up and down based on the workload. & true/false & It will increase the resource when we are handling a workload .\\
+   \hline    
+    \end{tabular}
+\end{center}	
+\end{table*}
+
+
+
+

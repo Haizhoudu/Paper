@@ -16,69 +16,16 @@
 	\includegraphics[height=10cm]{3.eps}
 	\caption{Parameters of JVM Heap}\label{fig:ParametersJVM}
 \end{figure}
- \par Finally, twenty-two parameters are selected, which are shown in Table~\ref{tab:parameters}.  In Table~\ref{tab:parameters}, the ‘Default’ column lists the default value of each parameter. The 'Meaning' column  explains the meaning of this parameter. The ‘rules of thumb’ column lists the values of each parameter that the industry recommends [13][14], and the 'Importance' column is brief introduce the reasons of selection.  The principle for selecting these parameters are listed as follows. 1), the influences of these parameters cover almost all of the available resources in a cluster, such as CPU, Memory, and Disk. 2), these parameters have a great impact on different modules of Spark, such as schedule, shuffle and compress modules. 3), these parameters have impact in different levels of a cluster, such as machine-level, cluster-level. Generally speaking, various factors that affect the performance of the cluster are comprehensively considered. Based on our testing expertise, these parameters that have significant impact on the performance of Spark are selected.
+ \par Finally, twenty-two parameters are selected, which are shown in Table~\ref{tab:parameters}.  In Table~\ref{tab:parameters}, the ‘Default’ column lists the default value of each parameter. The 'Meaning' column  explains the meaning of this parameter. The ‘rules of thumb’ column lists the values of each parameter that the industry recommends \cite{SparkConfiguration} \cite{Sparkhub}, and the 'Importance' column is brief introduce the reasons of selection.  The principle for selecting these parameters are listed as follows. 1), the influences of these parameters cover almost all of the available resources in a cluster, such as CPU, Memory, and Disk. 2), these parameters have a great impact on different modules of Spark, such as schedule, shuffle and compress modules. 3), these parameters have impact in different levels of a cluster, such as machine-level, cluster-level. Generally speaking, various factors that affect the performance of the cluster are comprehensively considered. Based on our testing expertise, these parameters that have significant impact on the performance of Spark are selected.
 
-\begin{table*}[t]
-\caption{Selected Parameters In Our Approach} \label{tab:parameters} 
-\begin{center}
-    \begin{tabular}{ | c | c  | p{5cm} | c | p{5cm} |}
-    \hline
-    Parameter Name & Default & Meaning & Rules of Thumb & Importance\\ 
-    \hline
-    spark.driver.memory & 512m & Amount of memory to use for the driver process. & 1g-4g & Directly affect computing performace of spark memory.\\ 
-    \hline
-    spark.driver.maxResultSize & 1g & Each Spark action in the total size of the serialization results for all partitions. & 1g-8g & It represents a fixed memory overhead per reduce task.\\ 
-    \hline
-    spark.executor.memory &  1g &Amount of memory to use per executor process.   & 2g-8g & Directly affect computing performace of spark memory.\\
-    \hline
-     spark.driver.cores & 1 & Number of cores to use for the driver process. & 1-8. & Directly affect the parallelism of the program.\\
-    \hline
-      spark.executor.cores &  1 & Number of cores to use  per executor process. & 10-40 & Directly affect the parallelism of the program.\\
-    \hline
-     spark.shuffle.file.buffer &  32k & Size of the in-memory buffer for each shuffle file output stream. & 10-40 & These buffers reduce the number of disk seeks and system calls made in creating intermediate shuffle files.\\
-    \hline
-     spark.reducer.maxSizeInFlight &  48m & Maximum size of map outputs to fetch simultaneously from each reduce task.  & 24k-96k & This represents a fixed memory overhead per reduce task. \\
-    \hline
-     spark.shuffle.compress &  true & Whether to compress map output files. & true/false & It will speed up the shuffle action.\\
-    \hline
-     spark.shuffle.spill.compress &  true & Whether to compress data spilled during shuffles. & true/false & It will speed up the shuffle action.\\
-    \hline
-     spark.broadcast.compress &  true & Whether to compress broadcast variables before sending them. & true/false & It will speed up the broadcast action.\\
-    \hline
-     spark.io.compression.codec &  lz4 & The codec used to compress internal data such as RDD partitions, event log, broadcast variables and shuffle outputs. & lz4/lzf/snappy. &  It will speed up all of I/O action.\\
-    \hline
-     spark.rdd.compress &  false & Whether to compress serialized RDD partitions. & true/fasle & It can save substantial space at the cost of some extra CPU time.\\
-    \hline
-     spark.default.parallelism &  0.6 & Default number of partitions in RDDs returned by transformations. & 0.4-0.8 & It will add RDD parallelism when user operate join, reduceByKey, and parallelize.\\
-    \hline
-     spark.memory.fraction &  0.6 & Fraction of (heap space - 300MB) used for execution and storage & 0.4-0.8 & The purpose of this config is to set aside memory for internal metadata, user data structures, and imprecise size estimation in the case of sparse, unusually large records. \\
-    \hline
-     spark.memory.storageFraction &  0.5  & Amount of storage memory immune to eviction, expressed as a fraction of the size of the region set aside by it. & 0.3-0.8 & The higher this is, the less working memory may be available to execution and tasks may spill to disk more often.\\
-       \hline
-     spark.broadcast.blockSize &  4m & Size of each piece of a block for TorrentBroadcastFactory. & 2m-8m & It will affect parallelism during broadcast.\\
-      \hline
-    spark.files.useFetchCache &  true & File fetching will use a local cache that is shared by executors that belong to the same application, which can improve task launching performance when running many executors on the same host. & true/false & This optimization may be disabled in order to use Spark local directories that reside on NFS filesystems.\\    
-  \hline
-     spark.files.openCostInBytes &  4M & The estimated cost to open a file, measured by the number of bytes could be scanned in the same time. & true/false &the partitions with small files will be faster than partitions with bigger files.\\
-  \hline
-     spark.storage.memoryMapThreshold &  2m & Size of a block above which Spark memory maps when reading a block from disk. & 1m-4m & It prevents Spark from memory mapping very small blocks.\\
-  \hline
-    spark.rpc.message.maxSize & true & Maximum message size (in MB) to allow in "control plane" communication. & true/false & It will speed up the network action when  you are running jobs with many thousands of map and reduce tasks.\\
-  \hline
-    spark.speculation.quantile &  0.75 & Fraction of tasks which must be complete before speculation is enabled for a particular stage. & 0.45-0.9 & It will speed up the task.\\
-  \hline
-     spark.dynamicAllocation.enabled &  true & Whether to use dynamic resource allocation, which scales the number of executors registered with this application up and down based on the workload. & true/false & It will increase the resource when we are handling a workload .\\
-   \hline    
-    \end{tabular}
-\end{center}	
-\end{table*}
+
 
 \par However, parameter selection in a PSO performance model is a non-trivial research issue, which can’t only depend on the domain experts; we will make up on this in the future work.
 
 \subsection{Coding Method}\label{subsec:coding}
 \par Type of Spark parameters have some difference type, such as: Float, Interger, Enumeration, Boolean. Because binary coding will occur the mapping errors when it discretize in the continuous function, in this paper we will adopt the floating coding method. The length of coding is decided by num of parameters. We assume a set of parameters as  $A={p_1, p_2, \cdots,  p_N}$, the value of floating coding will be as $V={v_1, v_2, \cdots , v_N}$. It is shown in Table~\ref{tab:coding}  as follows.
 
-\begin{table}[h]
+\begin{table}[!htbp]
 \caption{Coding of Floating Number} \label{tab:coding} 
 \begin{center}
     \begin{tabular}{l*{5}{c}r}
@@ -114,7 +61,7 @@ round(R')= 1?true : false & Boolean\\
 \subsection{Evaluation Function}\label{subsec:evaluation}
 \par As we known, The key criterion of evaluating configuration solution is job time. Therefore, we will choose job time as the evaluation function. We assume that the position $X_{ij}$of particle $ \mathit{i} $ obtained after the $j$th iteration, and  the running time of selected configration is $t(X_{ij})$. So the objective function is expressed as $f=t(X_{ij})$.
 \subsection{Weighted Allocation}\label{subsec:weight}
-\par The particle swarm optimization algorithm always maintains an acceleration in the case of constant inertia, which facilitates global search at the beginning. However, as the number of iterations increasing, the particles should gradually change from global search to local search. Therefore, the inertia weight should be gradual reduced. Paper [???] proposed a inertia weight method to handle it. The inertia weight $w$ is designed as a linearly reduced function, and the formula is as follows.
+\par The particle swarm optimization algorithm always maintains an acceleration in the case of constant inertia, which facilitates global search at the beginning. However, as the number of iterations increasing, the particles should gradually change from global search to local search. Therefore, the inertia weight should be gradual reduced. Paper \cite{shi1999towards} proposed a inertia weight method to handle it. The inertia weight $w$ is designed as a linearly reduced function, and the formula is as follows.
 \begin{equation}
 w=w_{max}-\frac{w_{max}-w_{min}}{iter_{max}} \times k
 \end{equation}
@@ -126,8 +73,7 @@ V^{k+1}_{ij} = wV^{k}_{ij} + C_1 R_1(pbest_{ij}-X^k_{ij}) + C_2 R_2 (gbest_j-X^k
 X^{k+1}_{ij} = X^{k}_{ij} + V^{k+1}_{ij}
 \end{equation}
 \subsection{Construct the Learning Examplar}\label{subsec:construct}
-\par The orthogonal experimental design (OED) offers an ability to discover the best combination levels for different factors with a reasonably small number of experimental samples [19], [20]. We  use the OED method to construct a promising learning exemplar. OED is used to discover the best combination of a
-particle’s best historical position and its neighborhood’s best historical position. The orthogonal experimental factors are the dimensions of the problem and the levels of each dimension (factor) are the two choices of a particle’s best position value and its neighborhood’s best position value on this corresponding dimension.
+\par The orthogonal experimental design (OED) offers an ability to discover the best combination levels for different factors with a reasonably small number of experimental samples \cite{dc2000design}, \cite{beijing}. We  use the OED method to construct a promising learning exemplar. OED is used to discover the best combination of a particle’s best historical position and its neighborhood’s best historical position. The orthogonal experimental factors are the dimensions of the problem and the levels of each dimension (factor) are the two choices of a particle’s best position value and its neighborhood’s best position value on this corresponding dimension.
 \par Let $f_m$ denote the experimental result of the $m$th ($1\leq m \leq M$) combination and $S_nq $ denote the effect of the $q$th ($1 \leq q \leq Q$) level in the $n$th ($1 \leq n \leq N$) factor. The calculation of $S_nq$ is to add up all the $f_m$ in which the level is $q$ in the $n$th factor, and then divide the total count of $z_mnq $, as shown in (6) where $z_mnq $ is 1 if the $m$th experimental test is with the $q$th level of the $n$th factor, otherwise, $z_mnq $ is 0.
 \begin{equation}
  S_nq = \frac{\sum_{m=1}\nolimits M f_m \times z_mnq}{\sum_{m=1}\nolimits M z_mnq}
