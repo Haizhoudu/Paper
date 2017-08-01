@@ -1,4 +1,4 @@
-\section{Definitions}
+\section{Definitions}\label{sec:definition}
 \subsection{Apache Spark}
 \par  Apache Spark [3] is one of the popular open-source big
 data platforms, which introduces the concept of resilient
@@ -27,21 +27,14 @@ cluster is shown in Figure 1.
 	\caption{Architecture of Apache Spark.}\label{fig:ArchitectureSpark}
 \end{figure}
 
-\begin{figure}
-	\includegraphics[width=8cm]{2.eps}
-	\caption{Workflow of Spark}\label{fig:WorkflowSpark}
-\end{figure}
 
-\begin{figure}
-	\includegraphics[width=8cm]{3.eps}
-	\caption{Parameters of JVM Heap}\label{fig:ParametersJVM}
-\end{figure}
+
 
 \begin{figure}
 	\includegraphics[width=8cm]{4.eps}
 	\caption{Running of Spark}\label{fig:RunningSpark}
 \end{figure}
 
-
+\par Because of the in-memory nature of most Spark computations, Spark programs can be bottlenecked by any resource in the cluster: CPU, network bandwidth, or memory. Most often, if the data fits in memory, the bottleneck is network bandwidth, but sometimes, you also need to do some tuning, such as storing RDDs in serialized form, to decrease memory usage. 
 \subsection{Definitions}
 
